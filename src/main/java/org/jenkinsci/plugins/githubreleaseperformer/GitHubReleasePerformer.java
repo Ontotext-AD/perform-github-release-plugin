@@ -20,11 +20,11 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.io.StringWriter;
 
-public class GitHubReleasePerformer extends Builder implements Serializable {
+public class GitHubReleasePerformer extends Builder {
 
+	private final String apiUrl;
 	private final String tag;
 	private final String branch;
 	private final String releaseNotesFile;
@@ -41,8 +41,10 @@ public class GitHubReleasePerformer extends Builder implements Serializable {
 
 	@SuppressWarnings("unused")
 	@DataBoundConstructor
-	public GitHubReleasePerformer(String user, String password, String tag, String branch, String releaseNotesFile, String owner,
+	public GitHubReleasePerformer(String apiUrl, String user, String password, String tag, String branch, String releaseNotesFile,
+			String owner,
 			String repository) {
+		this.apiUrl = apiUrl;
 		this.tag = Util.fixEmptyAndTrim(tag);
 		this.branch = Util.fixEmptyAndTrim(branch);
 		this.releaseNotesFile = Util.fixEmptyAndTrim(releaseNotesFile);
@@ -74,11 +76,13 @@ public class GitHubReleasePerformer extends Builder implements Serializable {
 			e.printStackTrace(listener.error("Unable to resolve macros"));
 		}
 		try {
-			github = GitHub.connectUsingPassword(resolvedUser, resolvedPassword);
+			github = GitHub.connectToEnterprise(apiUrl, resolvedUser, resolvedPassword);
 			ghRepository = github.getRepository(resolvedOwner + "/" + resolvedRepository);
 			GHContent currentReleaseNotes = getReleaseNotesFile(resolvedReleaseNotesFile, resolvedBranch, listener);
-			createRelease(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
-			writeNewReleaseNotes(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
+			boolean result = createRelease(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
+			if (result) {
+				writeNewReleaseNotes(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
+			}
 		} catch (IOException e) {
 			listener.error("Unable to connect to repository [%s], [%s]", resolvedOwner + "/" + resolvedRepository,
 					e.getMessage());
@@ -98,7 +102,9 @@ public class GitHubReleasePerformer extends Builder implements Serializable {
 		return result;
 	}
 
-	private void createRelease(GHContent releaseNotes, String tag, String releaseNotesFile, String branch, BuildListener listener) {
+	private boolean createRelease(GHContent releaseNotes, String tag, String releaseNotesFile, String branch,
+			BuildListener listener) {
+		boolean result = true;
 		String releaseNotesString = null;
 
 		if (releaseNotes != null) {
@@ -124,7 +130,9 @@ public class GitHubReleasePerformer extends Builder implements Serializable {
 			listener.getLogger().println(message);
 		} catch (IOException e) {
 			listener.error("Unable to create release, [%s]", e.getMessage());
+			result = false;
 		}
+		return result;
 	}
 
 	private void writeNewReleaseNotes(GHContent currentReleaseNotes, String tag, String releaseNotesFile, String branch,

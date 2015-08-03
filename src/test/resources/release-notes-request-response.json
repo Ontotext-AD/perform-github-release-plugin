@@ -1,0 +1,45 @@
+{
+  "content": {
+    "name": "RELEASE-NOTES.md",
+    "path": "RELEASE-NOTES.md",
+    "sha": "95b966ae1c166bd92f8ae7d1c313e738c731dfc3",
+    "size": 9,
+    "url": "https://api.github.com/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md",
+    "html_url": "https://github.com/Ontotext-AD/release-test/blob/master/RELEASE-NOTES.md",
+    "git_url": "https://api.github.com/repos/Ontotext-AD/release-test/git/blobs/95b966ae1c166bd92f8ae7d1c313e738c731dfc3",
+    "download_url": "https://raw.githubusercontent.com/Ontotext-AD/HelloWorld/master/RELEASE-NOTES.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md",
+      "git": "https://api.github.com/repos/Ontotext-AD/release-test/git/blobs/95b966ae1c166bd92f8ae7d1c313e738c731dfc3",
+      "html": "https://github.com/Ontotext-AD/release-test/blob/master/RELEASE-NOTES.md"
+    }
+  },
+  "commit": {
+    "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",
+    "url": "https://api.github.com/repos/Ontotext-AD/release-test/git/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+    "html_url": "https://github.com/Ontotext-AD/release-test/git/commit/7638417db6d59f3c431d3e1f261cc637155684cd",
+    "author": {
+      "date": "2014-11-07T22:01:45Z",
+      "name": "test-user",
+      "email": "test-user@mail.com"
+    },
+    "committer": {
+      "date": "2014-11-07T22:01:45Z",
+      "name": "test-user",
+      "email": "test-user@mail.com"
+    },
+    "message": "my commit message",
+    "tree": {
+      "url": "https://api.github.com/repos/Ontotext-AD/release-test/git/trees/691272480426f78a0138979dd3ce63b77f706feb",
+      "sha": "691272480426f78a0138979dd3ce63b77f706feb"
+    },
+    "parents": [
+      {
+        "url": "https://api.github.com/repos/Ontotext-AD/release-test/git/commits/1acc419d4d6a9ce985db7be48c6349a0475975b5",
+        "html_url": "https://github.com/Ontotext-AD/release-test/git/commit/1acc419d4d6a9ce985db7be48c6349a0475975b5",
+        "sha": "1acc419d4d6a9ce985db7be48c6349a0475975b5"
+      }
+    ]
+  }
+}

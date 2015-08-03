@@ -46,6 +46,12 @@
       <version>18.0</version>
       <scope>TEST</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-netty</artifactId>
+      <version>RELEASE</version>
+      <scope>TEST</scope>
+    </dependency>
   </dependencies>
 
   <scm>
