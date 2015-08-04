@@ -21,4 +21,7 @@
 	<f:entry title="${%Release notes file}" field="releaseNotesFile" description="Release notes file">
 		<f:textbox default="RELEASE-NOTES.md"/>
 	</f:entry>
+	<f:entry title="${%Api url}" field="apiUrl" description="GitHub(Enterprise) api url(if empty github api url is taken)">
+		<f:textbox />
+	</f:entry>
 </j:jelly>

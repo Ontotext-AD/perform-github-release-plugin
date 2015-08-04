@@ -73,13 +73,18 @@ public class GitHubReleasePerformer extends Builder {
 			resolvedBranch = TokenMacro.expandAll(build, listener, branch);
 			resolvedReleaseNotesFile = TokenMacro.expandAll(build, listener, releaseNotesFile);
 		} catch (Exception e) {
-			e.printStackTrace(listener.error("Unable to resolve macros"));
+			listener.error("Unable to resolve macro [%s]", e.getMessage());
 		}
 		try {
-			github = GitHub.connectToEnterprise(apiUrl, resolvedUser, resolvedPassword);
+			if (apiUrl != null) {
+				github = GitHub.connectToEnterprise(apiUrl, resolvedUser, resolvedPassword);
+			} else {
+				github = GitHub.connectUsingPassword(resolvedUser, resolvedPassword);
+			}
 			ghRepository = github.getRepository(resolvedOwner + "/" + resolvedRepository);
 			GHContent currentReleaseNotes = getReleaseNotesFile(resolvedReleaseNotesFile, resolvedBranch, listener);
-			boolean result = createRelease(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
+			boolean result =
+					createRelease(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
 			if (result) {
 				writeNewReleaseNotes(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
 			}
@@ -202,7 +207,7 @@ public class GitHubReleasePerformer extends Builder {
 
 		@Override
 		public String getDisplayName() {
-			return "Preform GitHub release";
+			return "Perform GitHub release";
 		}
 
 		@Override
