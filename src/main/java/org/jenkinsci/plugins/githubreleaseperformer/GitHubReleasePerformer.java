@@ -37,7 +37,7 @@ public class GitHubReleasePerformer extends Builder {
 	private static final String RELEASE_NOTES_SEPARATOR = "###################";
 
 	private static final String RELEASE_NOTES_TEMPLATE =
-			"Next release\n============\n\n### New features\n\n* [JIRA-TICKET](jira-link): Some feature\n\n### Improvements\n\n* [JIRA-TICKET](jira-link): Some improvement\n\n### Bug fixes\n\n* [JIRA-TICKET](jira-link): Some bug fix";
+			"Next release\n============\n\n### New features\n\n* [JIRA-TICKET](https://jira.ontotext.com/browse/): Some feature\n\n### Improvements\n\n* [JIRA-TICKET](https://jira.ontotext.com/browse/): Some improvement\n\n### Bug fixes\n\n* [JIRA-TICKET](https://jira.ontotext.com/browse/): Some bug fix";
 
 	@SuppressWarnings("unused")
 	@DataBoundConstructor
