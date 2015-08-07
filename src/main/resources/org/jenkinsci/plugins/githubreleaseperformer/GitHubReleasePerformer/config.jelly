@@ -22,6 +22,6 @@
 		<f:textbox default="RELEASE-NOTES.md"/>
 	</f:entry>
 	<f:entry title="${%Api url}" field="apiUrl" description="GitHub(Enterprise) api url(if empty github api url is taken)">
-		<f:textbox />
+		<f:textbox default="https://api.github.com" />
 	</f:entry>
 </j:jelly>

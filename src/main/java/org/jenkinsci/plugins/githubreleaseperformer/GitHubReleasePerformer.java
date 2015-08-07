@@ -18,9 +18,7 @@ import org.kohsuke.github.GitHub;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 
 public class GitHubReleasePerformer extends Builder {
 
@@ -35,6 +33,8 @@ public class GitHubReleasePerformer extends Builder {
 
 	private GitHub github;
 	private GHRepository ghRepository;
+
+	private static final String RELEASE_NOTES_SEPARATOR = "###################";
 
 	private static final String RELEASE_NOTES_TEMPLATE =
 			"### New features\n\n* [JIRA-TICKET](jira-link): Some feature\n\n### Improvements\n\n* [JIRA-TICKET](jira-link): Some improvement\n\n### Bug fixes\n\n* [JIRA-TICKET](jira-link): Some bug fix";
@@ -76,7 +76,7 @@ public class GitHubReleasePerformer extends Builder {
 			listener.error("Unable to resolve macro [%s]", e.getMessage());
 		}
 		try {
-			if (apiUrl != null) {
+			if (apiUrl != null && !apiUrl.isEmpty()) {
 				github = GitHub.connectToEnterprise(apiUrl, resolvedUser, resolvedPassword);
 			} else {
 				github = GitHub.connectUsingPassword(resolvedUser, resolvedPassword);
@@ -89,7 +89,7 @@ public class GitHubReleasePerformer extends Builder {
 				writeNewReleaseNotes(currentReleaseNotes, resolvedTag, resolvedReleaseNotesFile, resolvedBranch, listener);
 			}
 		} catch (IOException e) {
-			listener.error("Unable to connect to repository [%s], [%s]", resolvedOwner + "/" + resolvedRepository,
+			listener.error("Unable to connect to repository [%s], [%s]", apiUrl + "/" + resolvedOwner + "/" + resolvedRepository,
 					e.getMessage());
 		}
 
@@ -110,21 +110,32 @@ public class GitHubReleasePerformer extends Builder {
 	private boolean createRelease(GHContent releaseNotes, String tag, String releaseNotesFile, String branch,
 			BuildListener listener) {
 		boolean result = true;
-		String releaseNotesString = null;
-
+		StringBuilder stringBuilder = null;
+		boolean separatorFound = false;
 		if (releaseNotes != null) {
 			try {
 				InputStream inputStream = releaseNotes.read();
-				StringWriter writer = new StringWriter();
-				IOUtils.copy(inputStream, writer, "UTF-8");
-				releaseNotesString = writer.toString();
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+				stringBuilder = new StringBuilder();
+				String line;
+				separatorFound = false;
+				while ((line = bufferedReader.readLine()) != null) {
+					if (line.trim().equals(RELEASE_NOTES_SEPARATOR) || line.trim().matches("^###[#]+$")) {
+						separatorFound = true;
+						break;
+					}
+					stringBuilder.append(line).append("\n");
+				}
 			} catch (IOException e) {
 				listener.error("Unable to read release notes, [%s]", e.getMessage());
 			}
 		}
 
 		GHReleaseBuilder releaseBuilder = new GHReleaseBuilder(ghRepository, tag);
-		releaseBuilder.body(releaseNotesString);
+		if (stringBuilder != null && separatorFound) {
+			releaseBuilder.body(stringBuilder.toString());
+		}
 		releaseBuilder.commitish(branch);
 		releaseBuilder.draft(false);
 		releaseBuilder.name(tag);
@@ -144,8 +155,17 @@ public class GitHubReleasePerformer extends Builder {
 			BuildListener listener) {
 		if (currentReleaseNotes != null) {
 			try {
+				InputStream inputStream = currentReleaseNotes.read();
+				StringWriter writer = new StringWriter();
+				IOUtils.copy(inputStream, writer, "UTF-8");
+				StringBuilder stringBuilder = new StringBuilder(RELEASE_NOTES_TEMPLATE);
+				stringBuilder.append("\n\n");
+				stringBuilder.append(RELEASE_NOTES_SEPARATOR);
+				stringBuilder.append("\n\n");
+				stringBuilder.append(writer.toString());
+
 				currentReleaseNotes
-						.update(RELEASE_NOTES_TEMPLATE, String.format("Updating %s after release %s", releaseNotesFile, tag),
+						.update(stringBuilder.toString(), String.format("Updating %s after release %s", releaseNotesFile, tag),
 								branch);
 			} catch (IOException e) {
 				listener.error("Unable to update release note file [%s], [%s]", releaseNotesFile, e.getMessage());
@@ -153,7 +173,7 @@ public class GitHubReleasePerformer extends Builder {
 
 		} else {
 			try {
-				ghRepository.createContent(RELEASE_NOTES_TEMPLATE,
+				ghRepository.createContent(RELEASE_NOTES_TEMPLATE + "\n" + RELEASE_NOTES_SEPARATOR + "\n",
 						String.format("Updating %s after release %s", releaseNotesFile, tag),
 						releaseNotesFile, branch);
 			} catch (IOException e) {
@@ -195,6 +215,11 @@ public class GitHubReleasePerformer extends Builder {
 	@SuppressWarnings("unused")
 	public String getRepository() {
 		return repository;
+	}
+
+	@SuppressWarnings("unused")
+	public String getApiUrl() {
+		return apiUrl;
 	}
 
 	@Extension

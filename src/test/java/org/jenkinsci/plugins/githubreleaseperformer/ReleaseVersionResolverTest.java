@@ -52,11 +52,11 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		setCreateReleaseExpectations();
 		setWriteReleaseNotesExpectations();
 		jenkinsRule.assertBuildStatus(Result.SUCCESS, project.scheduleBuild2(0).get());
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test");
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md");
-		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md");
-		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases");
-		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md");
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test", 1);
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
+		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md", 2);
+		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases", 1);
+		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
 	}
 
 	@Test
@@ -69,10 +69,10 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		setCreateReleaseExpectations();
 		setWriteReleaseNotesExpectations();
 		jenkinsRule.assertBuildStatus(Result.SUCCESS, project.scheduleBuild2(0).get());
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test");
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md");
-		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases");
-		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md");
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test", 1);
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
+		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases", 1);
+		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
 	}
 
 	@Test
@@ -85,10 +85,10 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		setGetReleaseNotesExpectations();
 		setWriteReleaseNotesExpectations();
 		jenkinsRule.assertBuildStatus(Result.SUCCESS, project.scheduleBuild2(0).get());
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test");
-		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md");
-		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md");
-		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases");
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test", 1);
+		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
+		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md", 1);
+		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases", 1);
 	}
 
 	public void setBaseRepositoryExpectations() throws IOException {
@@ -147,8 +147,8 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 
 	}
 
-	public void verifyRequest(String method, String path) {
+	public void verifyRequest(String method, String path, int times) {
 		mockServerClient.verify(HttpRequest.request().withMethod(method).withPath(path),
-				VerificationTimes.exactly(1));
+				VerificationTimes.exactly(times));
 	}
 }
