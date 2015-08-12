@@ -1,0 +1,18 @@
+{
+  "name": "RELEASE-NOTES.md",
+  "path": "RELEASE-NOTES.md",
+  "sha": "81aa968c440a861498ce9fef8ca62add475ae9ab",
+  "size": 179,
+  "url": "https://api.github.com/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md?ref=master",
+  "html_url": "https://github.com/Ontotext-AD/release-test/blob/master/RELEASE-NOTES.md",
+  "git_url": "https://api.github.com/repos/Ontotext-AD/release-test/git/blobs/81aa968c440a861498ce9fef8ca62add475ae9ab",
+  "download_url": "https://raw.githubusercontent.com/Ontotext-AD/release-test/master/RELEASE-NOTES.md",
+  "type": "file",
+  "content": "IyMjIE5ldyBmZWF0dXJlcwoKKiBbSklSQS1USUNLRVRdKGppcmEtbGluayk6 IFNvbWUgZmVhdHVyZQoKIyMjIEltcHJvdmVtZW50cwoKKiBbSklSQS1USUNL RVRdKGppcmEtbGluayk6IFNvbWUgaW1wcm92ZW1lbnQKCiMjIyBCdWcgZml4 ZXMKCiogW0pJUkEtVElDS0VUXShqaXJhLWxpbmspOiBTb21lIGJ1ZyBmaXgK CiMjIyMjIyMjIyMjIyMjIyMjIyMKCiMjIyBOZXcgZmVhdHVyZXMKCiogW0pJ UkEtVElDS0VUXShqaXJhLWxpbmspOiBTb21lIGZlYXR1cmUKCiMjIyBJbXBy b3ZlbWVudHMKCiogW0pJUkEtVElDS0VUXShqaXJhLWxpbmspOiBTb21lIGlt cHJvdmVtZW50CgojIyMgQnVnIGZpeGVzCgoqIFtKSVJBLVRJQ0tFVF0oamly YS1saW5rKTogU29tZSBidWcgZml4Cg== ",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md?ref=master",
+    "git": "https://api.github.com/repos/Ontotext-AD/release-test/git/blobs/81aa968c440a861498ce9fef8ca62add475ae9ab",
+    "html": "https://github.com/Ontotext-AD/release-test/blob/master/RELEASE-NOTES.md"
+  }
+}
