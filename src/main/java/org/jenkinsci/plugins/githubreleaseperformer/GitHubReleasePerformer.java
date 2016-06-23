@@ -10,6 +10,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.tokenmacro.TokenMacro;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHReleaseBuilder;
@@ -76,7 +77,7 @@ public class GitHubReleasePerformer extends Builder {
 			listener.error("Unable to resolve macro [%s]", e.getMessage());
 		}
 		try {
-			if (apiUrl != null && !apiUrl.isEmpty()) {
+			if (!StringUtils.isBlank(apiUrl)) {
 				github = GitHub.connectToEnterprise(apiUrl, resolvedUser, resolvedPassword);
 			} else {
 				github = GitHub.connectUsingPassword(resolvedUser, resolvedPassword);

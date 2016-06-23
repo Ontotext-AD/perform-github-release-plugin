@@ -32,13 +32,13 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 	public MockServerRule mockServerRule = new MockServerRule(this);
 
 	private MockServerClient mockServerClient =
-			new MockServerClient(MOCK_SERVER_HOST, mockServerRule.getHttpPort());
+			new MockServerClient(MOCK_SERVER_HOST, mockServerRule.getPort());
 
 	private String mockServerAddress;
 
 	@Before public void setUp() throws Exception {
 		project = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "project");
-		mockServerAddress = "http://" + MOCK_SERVER_HOST + ":" + mockServerRule.getHttpPort();
+		mockServerAddress = "http://" + MOCK_SERVER_HOST + ":" + mockServerRule.getPort();
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		jenkinsRule.assertBuildStatus(Result.SUCCESS, project.scheduleBuild2(0).get());
 		verifyRequest("GET", "/repos/Ontotext-AD/release-test", 1);
 		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
-		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md", 2);
+		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
 		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases", 1);
 		verifyRequest("PUT", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
 	}
@@ -87,7 +87,6 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		jenkinsRule.assertBuildStatus(Result.SUCCESS, project.scheduleBuild2(0).get());
 		verifyRequest("GET", "/repos/Ontotext-AD/release-test", 1);
 		verifyRequest("GET", "/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md", 1);
-		verifyRequest("POST", "/Ontotext-AD/release-test/master/RELEASE-NOTES.md", 1);
 		verifyRequest("POST", "/repos/Ontotext-AD/release-test/releases", 1);
 	}
 
@@ -107,11 +106,19 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 		JSONObject jsonObject = new JSONObject(body);
 		jsonObject.put("download_url", mockServerAddress + "/Ontotext-AD/release-test/master/RELEASE-NOTES.md");
 
+		// request the file
 		mockServerClient.when(
 				HttpRequest.request()
 						.withMethod("GET")
 						.withPath("/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md")
 						.withQueryStringParameter("ref", "master")
+		).respond(HttpResponse.response().withStatusCode(200).withBody(jsonObject.toString()));
+
+		// read the file
+		mockServerClient.when(
+				HttpRequest.request()
+						.withMethod("GET")
+						.withPath("/Ontotext-AD/release-test/master/RELEASE-NOTES.md")
 		).respond(HttpResponse.response().withStatusCode(200).withBody(jsonObject.toString()));
 	}
 
@@ -121,8 +128,8 @@ public class ReleaseVersionResolverTest extends JenkinsRule {
 
 		mockServerClient.when(
 				HttpRequest.request()
-						.withMethod("POST")
-						.withPath("/Ontotext-AD/release-test/master/RELEASE-NOTES.md")
+						.withMethod("PUT")
+						.withPath("/repos/Ontotext-AD/release-test/contents/RELEASE-NOTES.md")
 		).respond(HttpResponse.response().withStatusCode(200).withBody(body));
 
 		url = Resources.getResource("release-request-response.json");
